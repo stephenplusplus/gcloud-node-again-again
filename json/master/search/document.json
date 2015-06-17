@@ -175,35 +175,6 @@
   {
     "tags": [
       {
-        "type": "example",
-        "string": "document.toJSON();\n// {\n//   docId: 'this-document-id',\n//   fields: {\n//     // ...\n//   },\n//   rank: 8\n// }",
-        "html": "<p>document.toJSON();<br />// {<br />//   docId: &#39;this-document-id&#39;,<br />//   fields: {<br />//     // ...<br />//   },<br />//   rank: 8<br />// }</p>"
-      }
-    ],
-    "description": {
-      "full": "<p>Return just the document detail properties of this Document instance.</p>",
-      "summary": "<p>Return just the document detail properties of this Document instance.</p>",
-      "body": ""
-    },
-    "isPrivate": false,
-    "isConstructor": false,
-    "isClass": false,
-    "isEvent": false,
-    "ignore": false,
-    "line": 60,
-    "codeStart": 73,
-    "code": "Document.prototype.toJSON = function() {\n  var documentObject = {\n    fields: this.fields\n  };\n\n  if (util.is(this.id, 'string')) {\n    documentObject.docId = this.id;\n  }\n\n  if (util.is(this.rank, 'number')) {\n    documentObject.rank = this.rank;\n  }\n\n  return documentObject;\n};",
-    "ctx": {
-      "type": "method",
-      "constructor": "Document",
-      "cons": "Document",
-      "name": "toJSON",
-      "string": "Document.prototype.toJSON()"
-    }
-  },
-  {
-    "tags": [
-      {
         "type": "throws",
         "string": "{error} if a name is not provided.\n",
         "types": [
@@ -255,9 +226,9 @@
     "isClass": false,
     "isEvent": false,
     "ignore": false,
-    "line": 89,
-    "codeStart": 101,
-    "code": "Document.prototype.addField = function(name) {\n  if (!util.is(name, 'string')) {\n    throw new Error('`name` is required to add a field to this document.');\n  }\n\n  this.fields[name] = new Field();\n\n  return this.fields[name];\n};",
+    "line": 60,
+    "codeStart": 72,
+    "code": "Document.prototype.addField = function(name) {\n  if (!util.is(name, 'string')) {\n    throw new Error('A name is required to add a field to this document.');\n  }\n\n  this.fields[name] = new Field();\n\n  return this.fields[name];\n};",
     "ctx": {
       "type": "method",
       "constructor": "Document",
@@ -298,9 +269,9 @@
     "isClass": false,
     "isEvent": false,
     "ignore": false,
-    "line": 111,
-    "codeStart": 119,
-    "code": "Document.prototype.delete = function(callback) {\n  this.makeReq_('DELETE', '', null, null, function(err, apiResponse) {\n    (callback || util.noop)(err, apiResponse);\n  });\n};",
+    "line": 82,
+    "codeStart": 90,
+    "code": "Document.prototype.delete = function(callback) {\n  this.makeReq_('DELETE', '', null, null, function(err, resp) {\n    (callback || util.noop)(err, resp);\n  });\n};",
     "ctx": {
       "type": "method",
       "constructor": "Document",
@@ -341,9 +312,9 @@
     "isClass": false,
     "isEvent": false,
     "ignore": false,
-    "line": 125,
-    "codeStart": 145,
-    "code": "Document.prototype.getMetadata = function(callback) {\n  var self = this;\n\n  callback = callback || util.noop;\n\n  this.makeReq_('GET', '/', null, null, function(err, resp) {\n    if (err) {\n      callback(err, null, resp);\n      return;\n    }\n\n    self.fields = {};\n    self.rank = null;\n\n    if (util.is(resp.fields, 'object')) {\n      Object.keys(resp.fields).forEach(function(fieldName) {\n        var fieldInstance = self.addField(fieldName);\n        fieldInstance.values = resp.fields[fieldName].values;\n      });\n    }\n\n    if (util.is(resp.rank, 'number')) {\n      self.rank = resp.rank;\n    }\n\n    callback(null, self, resp);\n  });\n};",
+    "line": 96,
+    "codeStart": 116,
+    "code": "Document.prototype.getMetadata = function(callback) {\n  var self = this;\n\n  callback = callback || util.noop;\n\n  this.makeReq_('GET', '/', null, null, function(err, resp) {\n    if (err) {\n      callback(err, null, resp);\n      return;\n    }\n\n    self.fields = {};\n    delete self.rank;\n\n    if (util.is(resp.fields, 'object')) {\n      Object.keys(resp.fields).forEach(function(fieldName) {\n        var fieldInstance = self.addField(fieldName);\n        fieldInstance.values = resp.fields[fieldName].values;\n      });\n    }\n\n    if (util.is(resp.rank, 'number')) {\n      self.rank = resp.rank;\n    }\n\n    callback(null, self, resp);\n  });\n};",
     "ctx": {
       "type": "method",
       "constructor": "Document",
@@ -392,15 +363,44 @@
     "isClass": false,
     "isEvent": false,
     "ignore": false,
-    "line": 174,
-    "codeStart": 187,
-    "code": "Document.prototype.setRank = function(rank) {\n  if (!util.is(rank, 'number') || rank < 0) {\n    throw new Error('`rank` should be a positive integer.');\n  }\n\n  this.rank = rank;\n};",
+    "line": 145,
+    "codeStart": 158,
+    "code": "Document.prototype.setRank = function(rank) {\n  if (!util.is(rank, 'number') || rank < 0) {\n    throw new Error('rank should be a positive integer.');\n  }\n\n  this.rank = rank;\n};",
     "ctx": {
       "type": "method",
       "constructor": "Document",
       "cons": "Document",
       "name": "setRank",
       "string": "Document.prototype.setRank()"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "example",
+        "string": "document.toJSON();\n// {\n//   docId: 'this-document-id',\n//   fields: {\n//     // ...\n//   },\n//   rank: 8\n// }",
+        "html": "<p>document.toJSON();<br />// {<br />//   docId: &#39;this-document-id&#39;,<br />//   fields: {<br />//     // ...<br />//   },<br />//   rank: 8<br />// }</p>"
+      }
+    ],
+    "description": {
+      "full": "<p>Return just the document detail properties of this Document instance.</p>",
+      "summary": "<p>Return just the document detail properties of this Document instance.</p>",
+      "body": ""
+    },
+    "isPrivate": false,
+    "isConstructor": false,
+    "isClass": false,
+    "isEvent": false,
+    "ignore": false,
+    "line": 166,
+    "codeStart": 179,
+    "code": "Document.prototype.toJSON = function() {\n  var documentObject = {\n    fields: this.fields\n  };\n\n  if (util.is(this.id, 'string')) {\n    documentObject.docId = this.id;\n  }\n\n  if (util.is(this.rank, 'number')) {\n    documentObject.rank = this.rank;\n  }\n\n  return documentObject;\n};",
+    "ctx": {
+      "type": "method",
+      "constructor": "Document",
+      "cons": "Document",
+      "name": "toJSON",
+      "string": "Document.prototype.toJSON()"
     }
   },
   {

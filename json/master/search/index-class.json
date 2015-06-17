@@ -83,16 +83,16 @@
     "tags": [
       {
         "type": "type",
-        "string": "{module:common/StreamRouter}",
+        "string": "{module:common/streamrouter}",
         "types": [
-          "module:common/StreamRouter"
+          "module:common/streamrouter"
         ],
-        "typesDescription": "module:<a href=\"module%3Acommon%2FStreamRouter.html\">common/StreamRouter</a>",
+        "typesDescription": "module:<a href=\"module%3Acommon%2Fstreamrouter.html\">common/streamrouter</a>",
         "optional": false,
         "nullable": false,
         "nonNullable": false,
         "variable": false,
-        "html": "<p>{module:common/StreamRouter}</p>"
+        "html": "<p>{module:common/streamrouter}</p>"
       },
       {
         "type": "private",
@@ -113,12 +113,12 @@
     "ignore": false,
     "line": 31,
     "codeStart": 35,
-    "code": "var StreamRouter = require('../common/StreamRouter.js');",
+    "code": "var streamRouter = require('../common/stream-router.js');",
     "ctx": {
       "type": "declaration",
-      "name": "StreamRouter",
-      "value": "require('../common/StreamRouter.js')",
-      "string": "StreamRouter"
+      "name": "streamRouter",
+      "value": "require('../common/stream-router.js')",
+      "string": "streamRouter"
     }
   },
   {
@@ -207,7 +207,7 @@
     "ignore": false,
     "line": 43,
     "codeStart": 60,
-    "code": "function Index(search, id) {\n  this.search_ = search;\n  this.id = id;\n\n  if (!this.id) {\n    throw new Error('An ID is needed to access a Google Cloud Search index');\n  }\n}",
+    "code": "function Index(search, id) {\n  this.search_ = search;\n  this.id = id;\n\n  if (!this.id) {\n    throw new Error('An ID is needed to access a Google Cloud Search index.');\n  }\n}",
     "ctx": {
       "type": "constructor",
       "name": "Index",
@@ -431,6 +431,14 @@
   {
     "tags": [
       {
+        "type": "throws",
+        "string": "{error} If a query string or object isn't provided.\n",
+        "types": [
+          "error"
+        ],
+        "description": "<p>If a query string or object isn&#39;t provided. </p>"
+      },
+      {
         "type": "param",
         "string": "{string|object} query - A query object or simply a string query.",
         "name": "query",
@@ -518,8 +526,8 @@
     "isEvent": false,
     "ignore": false,
     "line": 223,
-    "codeStart": 281,
-    "code": "Index.prototype.search = function(query, callback) {\n  var self = this;\n\n  if (util.is(query, 'string')) {\n    query = {\n      query: query\n    };\n  }\n\n  query = query || {};\n\n  this.makeReq_('GET', '/search', query, null, function(err, resp) {\n    if (err) {\n      callback(err, null, null, resp);\n      return;\n    }\n\n    var nextQuery = null;\n\n    if (resp.nextPageToken) {\n      nextQuery = extend({}, query, {\n        pageToken: resp.nextPageToken\n      });\n    }\n\n    var documents = (resp.results || [])\n      .map(self.documentFromObject_.bind(self));\n\n    callback(null, documents, nextQuery, resp);\n  });\n};",
+    "codeStart": 283,
+    "code": "Index.prototype.search = function(query, callback) {\n  var self = this;\n\n  if (util.is(query, 'string')) {\n    query = {\n      query: query\n    };\n  }\n\n  if (!util.is(query, 'object')) {\n    throw new Error('A query must be either a string or object.');\n  }\n\n  this.makeReq_('GET', '/search', query, null, function(err, resp) {\n    if (err) {\n      callback(err, null, null, resp);\n      return;\n    }\n\n    var nextQuery = null;\n\n    if (resp.nextPageToken) {\n      nextQuery = extend({}, query, {\n        pageToken: resp.nextPageToken\n      });\n    }\n\n    var documents = (resp.results || [])\n      .map(self.documentFromObject_.bind(self));\n\n    callback(null, documents, nextQuery, resp);\n  });\n};",
     "ctx": {
       "type": "method",
       "constructor": "Index",
@@ -608,8 +616,8 @@
     "isClass": false,
     "isEvent": false,
     "ignore": false,
-    "line": 313,
-    "codeStart": 341,
+    "line": 317,
+    "codeStart": 345,
     "code": "Index.prototype.documentFromObject_ = function(documentObj) {\n  var document = this.document(documentObj.docId);\n\n  if (util.is(documentObj.fields, 'object')) {\n    document.fields = documentObj.fields;\n  }\n\n  if (util.is(documentObj.rank, 'number')) {\n    document.rank = documentObj.rank;\n  }\n\n  return document;\n};",
     "ctx": {
       "type": "method",
@@ -704,8 +712,8 @@
     "isClass": false,
     "isEvent": false,
     "ignore": false,
-    "line": 355,
-    "codeStart": 367,
+    "line": 359,
+    "codeStart": 371,
     "code": "Index.prototype.makeReq_ = function(method, path, query, body, callback) {\n  path = '/indexes/' + this.id + path;\n\n  this.search_.makeReq_(method, path, query, body, callback);\n};",
     "ctx": {
       "type": "method",
@@ -718,18 +726,18 @@
   {
     "tags": [],
     "description": {
-      "full": "<p>Developer Documentation</p><p>{module:search/index#getDocuments} and {module:search/index#search} can be<br />used with either a callback or as a readable object stream. <code>StreamRouter</code> is<br />used to add this dual behavior to these methods.</p>",
+      "full": "<p>Developer Documentation</p><p>{module:search/index#getDocuments} and {module:search/index#search} can be<br />used with either a callback or as a readable object stream. <code>streamRouter</code> is<br />used to add this dual behavior to these methods.</p>",
       "summary": "<p>Developer Documentation</p>",
-      "body": "<p>{module:search/index#getDocuments} and {module:search/index#search} can be<br />used with either a callback or as a readable object stream. <code>StreamRouter</code> is<br />used to add this dual behavior to these methods.</p>"
+      "body": "<p>{module:search/index#getDocuments} and {module:search/index#search} can be<br />used with either a callback or as a readable object stream. <code>streamRouter</code> is<br />used to add this dual behavior to these methods.</p>"
     },
     "isPrivate": false,
     "isConstructor": false,
     "isClass": false,
     "isEvent": false,
     "ignore": true,
-    "line": 373,
-    "codeStart": 379,
-    "code": "StreamRouter.extend(Index, ['getDocuments', 'search']);\n\nmodule.exports = Index;",
+    "line": 377,
+    "codeStart": 383,
+    "code": "streamRouter.extend(Index, ['getDocuments', 'search']);\n\nmodule.exports = Index;",
     "ctx": false
   }
 ]

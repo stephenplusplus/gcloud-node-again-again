@@ -83,16 +83,16 @@
     "tags": [
       {
         "type": "type",
-        "string": "{module:common/StreamRouter}",
+        "string": "{module:common/streamrouter}",
         "types": [
-          "module:common/StreamRouter"
+          "module:common/streamrouter"
         ],
-        "typesDescription": "module:<a href=\"module%3Acommon%2FStreamRouter.html\">common/StreamRouter</a>",
+        "typesDescription": "module:<a href=\"module%3Acommon%2Fstreamrouter.html\">common/streamrouter</a>",
         "optional": false,
         "nullable": false,
         "nonNullable": false,
         "variable": false,
-        "html": "<p>{module:common/StreamRouter}</p>"
+        "html": "<p>{module:common/streamrouter}</p>"
       },
       {
         "type": "private",
@@ -113,12 +113,12 @@
     "ignore": false,
     "line": 31,
     "codeStart": 35,
-    "code": "var StreamRouter = require('../common/StreamRouter.js');",
+    "code": "var streamRouter = require('../common/stream-router.js');",
     "ctx": {
       "type": "declaration",
-      "name": "StreamRouter",
-      "value": "require('../common/StreamRouter.js')",
-      "string": "StreamRouter"
+      "name": "streamRouter",
+      "value": "require('../common/stream-router.js')",
+      "string": "streamRouter"
     }
   },
   {
@@ -275,7 +275,7 @@
     "ignore": false,
     "line": 59,
     "codeStart": 80,
-    "code": "function Search(options) {\n  options = options || {};\n\n  if (!options.projectId) {\n    throw util.missingProjectIdError;\n  }\n\n  this.makeAuthorizedRequest_ = util.makeAuthorizedRequestFactory({\n    credentials: options.credentials,\n    keyFile: options.keyFilename,\n    scopes: SCOPES,\n    email: options.email\n  });\n\n  this.projectId = options.projectId;\n  this.projectName = 'projects/' + this.projectId;\n}",
+    "code": "function Search(options) {\n  if (!options || !options.projectId) {\n    throw util.missingProjectIdError;\n  }\n\n  this.makeAuthorizedRequest_ = util.makeAuthorizedRequestFactory({\n    credentials: options.credentials,\n    email: options.email,\n    keyFile: options.keyFilename,\n    scopes: SCOPES\n  });\n\n  this.projectId_ = options.projectId;\n}",
     "ctx": {
       "type": "constructor",
       "name": "Search",
@@ -384,9 +384,9 @@
     "isClass": false,
     "isEvent": false,
     "ignore": false,
-    "line": 98,
-    "codeStart": 145,
-    "code": "Search.prototype.getIndexes = function(query, callback) {\n  var self = this;\n\n  if (util.is(query, 'function')) {\n    callback = query;\n    query = {};\n  }\n\n  if (query.prefix) {\n    query.indexNamePrefix = query.prefix;\n    delete query.prefix;\n  }\n\n  this.makeReq_('GET', '/indexes', query, null, function(err, resp) {\n    if (err) {\n      callback(err, null, null, resp);\n      return;\n    }\n\n    var nextQuery = null;\n\n    if (resp.nextPageToken) {\n      nextQuery = extend({}, query, {\n        pageToken: resp.nextPageToken\n      });\n    }\n\n    var indexes = (resp.indexes || []).map(function(indexObject) {\n      var index = self.index(indexObject.indexId);\n\n      if (util.is(resp.indexedField, 'object')) {\n        index.fields = resp.indexedField;\n      }\n\n      return index;\n    });\n\n    callback(null, indexes, nextQuery, resp);\n  });\n};",
+    "line": 95,
+    "codeStart": 142,
+    "code": "Search.prototype.getIndexes = function(query, callback) {\n  var self = this;\n\n  if (util.is(query, 'function')) {\n    callback = query;\n    query = {};\n  }\n\n  query = extend({}, query);\n\n  if (query.prefix) {\n    query.indexNamePrefix = query.prefix;\n    delete query.prefix;\n  }\n\n  this.makeReq_('GET', '/indexes', query, null, function(err, resp) {\n    if (err) {\n      callback(err, null, null, resp);\n      return;\n    }\n\n    var nextQuery = null;\n\n    if (resp.nextPageToken) {\n      nextQuery = extend({}, query, {\n        pageToken: resp.nextPageToken\n      });\n    }\n\n    var indexes = (resp.indexes || []).map(function(indexObject) {\n      var index = self.index(indexObject.indexId);\n\n      if (util.is(resp.indexedField, 'object')) {\n        index.fields = resp.indexedField;\n      }\n\n      return index;\n    });\n\n    callback(null, indexes, nextQuery, resp);\n  });\n};",
     "ctx": {
       "type": "method",
       "constructor": "Search",
@@ -436,8 +436,8 @@
     "isClass": false,
     "isEvent": false,
     "ignore": false,
-    "line": 186,
-    "codeStart": 192,
+    "line": 185,
+    "codeStart": 191,
     "code": "Search.prototype.index = function(id) {\n  return new Index(this, id);\n};",
     "ctx": {
       "type": "method",
@@ -532,9 +532,9 @@
     "isClass": false,
     "isEvent": false,
     "ignore": false,
-    "line": 196,
-    "codeStart": 208,
-    "code": "Search.prototype.makeReq_ = function(method, path, query, body, callback) {\n  var reqOpts = {\n    method: method,\n    qs: query,\n    uri: util.format('{base}projects/{projectId}{path}', {\n      base: SEARCH_BASE_URL,\n      projectId: this.projectId,\n      path: path\n    })\n  };\n\n  if (body) {\n    reqOpts.json = body;\n  }\n\n  this.makeAuthorizedRequest_(reqOpts, callback);\n};",
+    "line": 195,
+    "codeStart": 207,
+    "code": "Search.prototype.makeReq_ = function(method, path, query, body, callback) {\n  var reqOpts = {\n    method: method,\n    qs: query,\n    uri: util.format('{base}projects/{projectId}{path}', {\n      base: SEARCH_BASE_URL,\n      projectId: this.projectId_,\n      path: path\n    })\n  };\n\n  if (body) {\n    reqOpts.json = body;\n  }\n\n  this.makeAuthorizedRequest_(reqOpts, callback);\n};",
     "ctx": {
       "type": "method",
       "constructor": "Search",
@@ -546,18 +546,18 @@
   {
     "tags": [],
     "description": {
-      "full": "<p>Developer Documentation</p><p>{module:search#getIndexes} can be used with either a callback or as a<br />readable object stream. <code>StreamRouter</code> is used to add this dual behavior.</p>",
+      "full": "<p>Developer Documentation</p><p>{module:search#getIndexes} can be used with either a callback or as a<br />readable object stream. <code>streamRouter</code> is used to add this dual behavior.</p>",
       "summary": "<p>Developer Documentation</p>",
-      "body": "<p>{module:search#getIndexes} can be used with either a callback or as a<br />readable object stream. <code>StreamRouter</code> is used to add this dual behavior.</p>"
+      "body": "<p>{module:search#getIndexes} can be used with either a callback or as a<br />readable object stream. <code>streamRouter</code> is used to add this dual behavior.</p>"
     },
     "isPrivate": false,
     "isConstructor": false,
     "isClass": false,
     "isEvent": false,
     "ignore": true,
-    "line": 226,
-    "codeStart": 231,
-    "code": "StreamRouter.extend(Search, 'getIndexes');\n\nmodule.exports = Search;",
+    "line": 225,
+    "codeStart": 230,
+    "code": "streamRouter.extend(Search, 'getIndexes');\n\nmodule.exports = Search;",
     "ctx": false
   }
 ]

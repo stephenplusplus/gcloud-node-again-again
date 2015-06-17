@@ -799,6 +799,7 @@ ul {
 .param-parent > div {
   font-size: 80%;
   line-height: 50%;
+  padding-top: 0.7em;
 }
 
 .param-optional .param-types {
@@ -1502,7 +1503,7 @@ ul {
         left: 0;
         bottom: 0;
         width: 240px;
-        padding-top: 7.7em;
+        padding-top: 5.1em;
         font-size: 0.9em;
         overflow-y: auto;
     }
