@@ -1038,6 +1038,11 @@ ul {
     margin-bottom: 10px;
 }
 
+.side-nav--meta--top {
+    padding-left: 2em;
+    padding-right: 2em;
+}
+
 .side-nav a {
     display: block;
     padding: 0.3em 2em;
