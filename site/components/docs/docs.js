@@ -244,9 +244,6 @@ angular
         path.push('index.json');
       } else if (module && cl) {
         path.push(module);
-        if (cl === 'index') {
-          cl = 'index-class';
-        }
         path.push(cl + '.json');
       }
       return $http.get(path.join('/'))
